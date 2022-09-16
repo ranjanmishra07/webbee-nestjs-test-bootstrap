@@ -84,6 +84,37 @@ export class MenuItemsService {
     ]
   */
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    // throw new Error('TODO in task 3');
+    const menus = await this.menuItemRepository.find();
+    const data:any[] = [];
+    menus.forEach((a:MenuItem)=> {
+        data.push({
+            id: a.id,
+            name: a.name,
+            url: a.url,
+            parentId: a.parentId,
+            createdAt: a.createdAt,
+            children: []
+        })
+    })
+    const idMapping = data.reduce((acc: any, el: any, i: any) => {
+        acc[el.id] = i;
+        return acc;
+      }, {});
+    let root: any[] = [];
+    data.forEach((el: any) => {
+    // Handle the root element
+    if (el.parentId === null) {
+        root.push(el);
+        return;
+    }
+    // Use our mapping to locate the parent element in our data array
+    const parentEl = data[idMapping[el.parentId]];
+    // Add our current el to its parent's `children` array
+    parentEl.children = [...(parentEl.children || []), el];
+    });
+
+    return root;
   }
+
 }
