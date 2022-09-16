@@ -2,12 +2,14 @@ import { Repository } from 'typeorm';
 import { Get, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
+import {Workshop} from './entities/workshop.entity';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    private workShopRepository : Repository<Workshop>
   ) {}
 
   getWarmupEvents() {
@@ -92,7 +94,20 @@ export class EventsService {
 
   @Get('events')
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    // throw new Error('TODO task 1');
+    const events = await this.getWarmupEvents();
+    const workshops = await this.workShopRepository.find();
+
+    const result = [];
+    events.forEach(event => {
+      workshops.forEach(element => {
+        if (event.id === element.eventId ) {
+          result.push({
+            
+          })
+        }
+      });
+    })
   }
 
   /*
