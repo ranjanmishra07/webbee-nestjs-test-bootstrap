@@ -199,6 +199,14 @@ export class EventsService {
      */
   @Get('futureevents')
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    // throw new Error('TODO task 2');
+    let allEvents = await this.getEventsWithWorkshops();
+    allEvents.forEach((a:any)=> {
+      console.log('a.created', a);
+      console.log('time', new Date(a.createdAt).getTime());
+    })
+    allEvents =  allEvents.filter((a: any)=> new Date(a.createdAt).getTime() > new Date().getTime() )
+    console.log('allevents', allEvents);
+    return allEvents;
   }
 }
