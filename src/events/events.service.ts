@@ -9,6 +9,7 @@ export class EventsService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    @InjectRepository(Workshop)
     private workShopRepository : Repository<Workshop>
   ) {}
 
@@ -98,16 +99,37 @@ export class EventsService {
     const events = await this.getWarmupEvents();
     const workshops = await this.workShopRepository.find();
 
-    const result = [];
+    const result: any = {};
     events.forEach(event => {
-      workshops.forEach(element => {
-        if (event.id === element.eventId ) {
-          result.push({
-            
-          })
-        }
-      });
+      result[event.id] = {
+        id: event.id,
+        name: event.name,
+        createdAt: event.createdAt,
+        workshops : []
+      }
     })
+
+    // console.log('workshops=============================', workshops);
+
+    workshops.forEach(a=> {
+      if(result[a.eventId].id == a.eventId) {
+        result[a.eventId].workshops.push(
+          {
+            id: a.id,
+            start: a.start,
+            end: a.end,
+            eventId: a.eventId,
+            name: a.name,
+            createdAt: a.createdAt,
+          }
+        );
+      }
+    })
+
+    // console.log('result=============================', result);
+
+
+    return Object.values(result);
   }
 
   /*
